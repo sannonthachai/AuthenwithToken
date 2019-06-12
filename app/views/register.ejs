@@ -6,39 +6,6 @@
       </h1>
       <form action="/register" method="POST">
         <div class="form-group">
-          <label for="firstname">First Name</label>
-          <input
-            type="firstname"
-            id="firstname"
-            name="firstname"
-            class="form-control"
-            placeholder="Enter Firstname"
-            value="<%= typeof firstname != 'undefined' ? firstname : '' %>"
-          />
-        </div>
-        <div class="form-group">
-          <label for="lastname">Last Name</label>
-          <input
-            type="name"
-            id="lastname"
-            name="lastname"
-            class="form-control"
-            placeholder="Enter Lastname"
-            value="<%= typeof lastname != 'undefined' ? lastname : '' %>"
-          />
-        </div>
-            <div class="form-group">
-          <label for="username">Username</label>
-          <input
-            type="username"
-            id="username"
-            name="username"
-            class="form-control"
-            placeholder="Enter Username"
-            value="<%= typeof username != 'undefined' ? username : '' %>"
-          />
-        </div>
-        <div class="form-group">
           <label for="email">Email</label>
           <input
             type="email"
@@ -47,6 +14,17 @@
             class="form-control"
             placeholder="Enter Email"
             value="<%= typeof email != 'undefined' ? email : '' %>"
+          />
+        </div>
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="username"
+            id="username"
+            name="username"
+            class="form-control"
+            placeholder="Enter Username"
+            value="<%= typeof username != 'undefined' ? username : '' %>"
           />
         </div>
         <div class="form-group">
