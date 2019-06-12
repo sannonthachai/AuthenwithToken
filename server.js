@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const morgan = require('morgan')
 const expressLayouts = require('express-ejs-layouts')
+const path = require('path')
 const bodyParser = require('body-parser')
 const app = express()
 
@@ -24,6 +25,12 @@ app.use(bodyParser.urlencoded({
     extended: true
 }))
 app.use(bodyParser.json())
+
+// Static file
+app.use(express.static(path.join(__dirname, 'public')))
+
+// Routes
+app.use('/', require('/app/routes/user'))
 
 
 const PORT = process.env.PORT || 5000
