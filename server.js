@@ -1,39 +1,40 @@
+// For our express application =====================================================
 const express = require('express')
-const mongoose = require('mongoose')
+const app = express()
 const morgan = require('morgan')
+const bodyParser = require('body-parser')
 const expressLayouts = require('express-ejs-layouts')
 const path = require('path')
-const bodyParser = require('body-parser')
+// For database ====================================================================
+const mongoose = require('mongoose')
+// For Passport ====================================================================
+const session = require('express-session')
 const flash = require('connect-flash')
-const app = express()
 
-// Connect Database
+// Connect Database ================================================================
 const db = require('./config/key')
 mongoose.connect(db.mongoURI,db.set)
     .then(() => console.log('MongoDB Connected'))
     .catch(err => console.log(err))
 
-// Logging 
-app.use(morgan('dev'))
+// Set up our express application ==================================================
+app.use(morgan('dev')) // Logging
+app.use(bodyParser.urlencoded({extended: true})) // Get information from html forms
+app.use(bodyParser.json()) // Get information from html forms
+app.use(expressLayouts) // Set up layout for templating
+app.set('views','./app/views') // Set up part for templating
+app.set('view engine','ejs') // Set up ejs for templating
+app.use(express.static(path.join(__dirname, 'public'))) // Get static file 
 
-// EJS
-app.use(expressLayouts)
-app.set('views','./app/views')
-app.set('view engine','ejs')
+// Required for passport
+app.use(session({
+    secret: 'ilovescotchscotchyscotchscotch', // session secret
+    resave: true,
+    saveUninitialized: true
+}));
+app.use(flash()) // Connect flash
 
-// Static File
-app.use(express.static(path.join(__dirname, 'public')))
-
-// Express Body-parser
-app.use(bodyParser.urlencoded({
-    extended: true
-}))
-app.use(bodyParser.json())
-
-// Connect Flash
-app.use(flash())
-
-// Global Variables
+// Global Variables ================================================================
 app.use((req, res, next) => {
     res.locals.success_msg = req.flash('success_msg')
     res.locals.error_msg = req.flash('error_msg')
@@ -41,9 +42,9 @@ app.use((req, res, next) => {
     next()
 })
 
-// Routes
+// Routes ==========================================================================
 app.use('/', require('./app/routes/user.route'))
 
-// Connect Port
+// Connect Port ====================================================================
 const PORT = process.env.PORT || 5000
 app.listen(PORT, console.log(`Server started on port ${PORT}`))
