@@ -30,7 +30,7 @@ app.use(bodyParser.json())
 app.use(express.static(path.join(__dirname, 'public')))
 
 // Routes
-app.use('/', require('/app/routes/user'))
+app.use('/', require('./app/routes/user'))
 
 
 const PORT = process.env.PORT || 5000
