@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 
 const userSchema = mongoose.Schema({
     local: {
@@ -19,5 +20,4 @@ userSchema.methods.validPassword = function(password) {
 }
 
 // create the model for users and expose it to our app
-const User = mongoose.model('User', userSchema)
-module.exports = User
+module.exports = mongoose.model('User', userSchema)
