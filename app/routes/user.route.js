@@ -1,7 +1,8 @@
-// Set up router
+// Set up router =========================================================================
 const express = require('express')
 const router = express.Router()
-
+const passport = require('passport')
+// Import model ==========================================================================
 const User = require('../models/user.model')
 
 router.get('/index', (req,res) => {
@@ -55,13 +56,14 @@ router.post('/register', (req,res) => {
     }
 })
 
-router.post('/index', (req,res) => {
-    let payload = {
-        sub: req.body.username,
-        iat: new Date().getTime()
-    }
-    let SECRET = 'CRIMSON_SECRET_KEY'
-    res.send(jwt.encode(payload, SECRET))
+router.post('/index', passport.authenticate('local', {
+    successRedirect: '/profile',
+    failureRedirect: '/index',
+    failureFlash: true
+}))
+
+router.get('/profile', (req,res) => {
+    res.send('Login Success')
 })
 
 module.exports = router

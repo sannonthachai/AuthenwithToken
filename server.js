@@ -8,8 +8,12 @@ const path = require('path')
 // For database ====================================================================
 const mongoose = require('mongoose')
 // For Passport ====================================================================
+const passport = require('passport')
 const session = require('express-session')
 const flash = require('connect-flash')
+
+// Passport Config
+require('./config/passport')(passport)
 
 // Connect Database ================================================================
 const db = require('./config/key')
@@ -28,7 +32,7 @@ app.use(express.static(path.join(__dirname, 'public'))) // Get static file
 
 // Required for passport
 app.use(session({
-    secret: 'ilovescotchscotchyscotchscotch', // session secret
+    secret: 'CRIMSON_SESSION', // session secret
     resave: true,
     saveUninitialized: true
 }));
