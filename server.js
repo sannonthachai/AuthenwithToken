@@ -47,7 +47,8 @@ app.use((req, res, next) => {
 })
 
 // Routes ==========================================================================
-app.use('/', require('./app/routes/user.route'))
+app.use('/', require('./app/routes/auth.route'))
+app.use('/', passport.authenticate('jwt', {session: false}), require('./app/routes/user.route'))
 
 // Connect Port ====================================================================
 const PORT = process.env.PORT || 5000

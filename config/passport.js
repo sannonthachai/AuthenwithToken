@@ -3,6 +3,7 @@ const LocalStrategy = require('passport-local').Strategy
 // For JWT ===============================================================================
 const JwtStrategy = require("passport-jwt").Strategy //ใช้ในการ decode jwt ออกมา
 const ExtractJwt = require("passport-jwt").ExtractJwt
+const key = require('../config/key')
 // Import model ==========================================================================
 const User = require('../app/models/user.model')
 
@@ -29,11 +30,11 @@ module.exports = (passport) => {
     )
 
     passport.use(new JwtStrategy({
-        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-        secretOrKey: 'CRIMSON_SECRET_KEY'
+        jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer'),
+        secretOrKey: key.secret
     },
     (jwtPayload, done) => {
-        User.findById(jwtPayload.id)
+        User.findOne({ 'local.username': jwtPayload.id })
             .then(user => {
                 return done(null, user)
             })
