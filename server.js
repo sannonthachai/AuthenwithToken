@@ -10,6 +10,7 @@ const mongoose = require('mongoose')
 // For Passport ====================================================================
 const passport = require('passport')
 const session = require('express-session')
+const cookieParser = require('cookie-parser')
 const flash = require('connect-flash')
 
 // Passport Config
@@ -18,8 +19,8 @@ require('./config/passport')(passport)
 // Connect Database ================================================================
 const db = require('./config/key')
 mongoose.connect(db.mongoURI,db.set)
-    .then(() => console.log('MongoDB Connected'))
-    .catch(err => console.log(err))
+        .then(() => console.log('MongoDB Connected'))
+        .catch(err => console.log(err))
 
 // Set up our express application ==================================================
 app.use(morgan('dev')) // Logging
@@ -36,6 +37,7 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }));
+app.use(cookieParser()) // Store token in cookie
 app.use(flash()) // Connect flash
 
 // Global Variables ================================================================
@@ -48,7 +50,7 @@ app.use((req, res, next) => {
 
 // Routes ==========================================================================
 app.use('/', require('./app/routes/auth.route'))
-app.use('/', passport.authenticate('jwt', {session: false}), require('./app/routes/user.route'))
+app.use('/', require('./app/routes/user.route'))
 
 // Connect Port ====================================================================
 const PORT = process.env.PORT || 5000

@@ -59,29 +59,28 @@ router.post('/register', (req,res) => {
 })
 
 router.post('/index', (req,res,next) => {
-    passport.authenticate('local', { session:false }, (err,user,info) => {
-        console.log(err)
-        if (err || !user) {
-            return res.status(400).json({
-                message: info ? info.message: 'Login falied',
-                user: user
-            })
+    passport.authenticate('local', { failureFlash: true }, (err,user,info) => {
+        if (err) {
+            console.log(err)
+        }
+        if (info != undefined) {
+            console.log(info.message)
+            res.send(info.message)
         } else {
-            req.login(user, { session:false }, (err) => {
-                if (err) {
-                    res.send(err)
-                }
-
-                let jwtPayload = {
-                    id: req.body.username,
-                    iat: new Date().getTime()
-                }
-                let token = jwt.sign(jwtPayload,key.secret)
-
-                return res.send({ user, token })
+            req.logIn(user,err => {
+                User.findOne({ 'local.username': username })
+                    .then(user => {
+                        let payload = {
+                            sub: req.body.username,
+                            iat: new Date().getTime()
+                        }
+                        let token = jwt.encode(payload, key.secret)
+                        res.cookie('jwt', token, { httpOnly: true })
+                        res.redirect('/profile')
+                    })
             })
         }
-    }) (req,res)
+    }) (req,res,next)
 })
 
 module.exports = router
