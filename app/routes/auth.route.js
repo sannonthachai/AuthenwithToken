@@ -73,4 +73,11 @@ router.post('/index', passport.authenticate('local', {
     }
 )
 
+router.get('/logout', (req,res) => {
+    req.logout()
+    req.flash('success_msg', 'You are logged out')
+    res.clearCookie('jwt', { httpOnly: true })
+    res.redirect('/index')
+})
+
 module.exports = router

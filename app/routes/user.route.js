@@ -1,9 +1,12 @@
 // Set up router =========================================================================
 const express = require('express')
 const router = express.Router()
+const { ensureAuthenticated } = require('../../config/checkjwt')
 
-router.get('/profile', (req, res) => {
-    res.send(req.user);
+router.get('/profile', ensureAuthenticated, (req, res) => {
+    res.render('profile', {
+        user: req.user
+    });
 });
 
 module.exports = router;
