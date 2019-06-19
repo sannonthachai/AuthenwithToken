@@ -8,7 +8,7 @@ const key = require('../../config/key')
 const User = require('../models/user.model')
 
 router.get('/index', (req,res) => {
-    res.render('login')
+    res.render('index')
 })
 
 router.get('/register', (req,res) => {
@@ -44,7 +44,7 @@ router.post('/register', (req,res) => {
                 let user = new User()
 
                 user.local.email    = email
-                user.local.username    = username
+                user.local.username = username
                 user.local.password = user.generateHash(password)
 
                 user.save()
@@ -59,7 +59,7 @@ router.post('/register', (req,res) => {
 })
 
 router.post('/index', (req,res,next) => {
-    passport.authenticate('local', { failureFlash: true }, (err,user,info) => {
+    passport.authenticate('local', { failureRedirect: '/index', failureFlash: true }, (err,user,info) => {
         if (err) {
             console.log(err)
         }
@@ -67,20 +67,32 @@ router.post('/index', (req,res,next) => {
             console.log(info.message)
             res.send(info.message)
         } else {
-            req.logIn(user,err => {
-                User.findOne({ 'local.username': username })
-                    .then(user => {
-                        let payload = {
-                            sub: req.body.username,
-                            iat: new Date().getTime()
-                        }
-                        let token = jwt.encode(payload, key.secret)
-                        res.cookie('jwt', token, { httpOnly: true })
-                        res.redirect('/profile')
-                    })
-            })
+            req.login(user, () => {
+                    let payload = {
+                        sub: req.body.username,
+                        iat: new Date().getTime()
+                    }
+                    let token = jwt.sign(payload, key.secret)
+                    res.cookie('jwt', token, { httpOnly: true })
+                    res.redirect('/profile')
+                })
         }
     }) (req,res,next)
 })
+
+router.post('/index', passport.authenticate('local', {
+    failureRedirect: '/index',
+    failureFlash: true,
+    session: false
+    }), (req,res) => {
+        let payload = {
+            sub: req.body.username,
+            iat: new Date().getTime()
+        }
+        let token = jwt.sign(payload, key.secret)
+        res.cookie('jwt', token, { httpOnly: true })
+        res.redirect('/profile')
+    }
+)
 
 module.exports = router

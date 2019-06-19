@@ -31,13 +31,14 @@ app.set('views','./app/views') // Set up part for templating
 app.set('view engine','ejs') // Set up ejs for templating
 app.use(express.static(path.join(__dirname, 'public'))) // Get static file 
 
-// Required for passport
+// Required for passport ===========================================================
 app.use(session({
     secret: 'CRIMSON_SESSION', // session secret
     resave: true,
     saveUninitialized: true
 }));
 app.use(cookieParser()) // Store token in cookie
+app.use(passport.initialize()) // Initialize passport
 app.use(flash()) // Connect flash
 
 // Global Variables ================================================================

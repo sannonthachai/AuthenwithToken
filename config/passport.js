@@ -1,5 +1,6 @@
 // For Local =============================================================================
 const LocalStrategy = require('passport-local').Strategy
+const bcrypt = require('bcrypt')
 // For JWT ===============================================================================
 const JwtStrategy = require("passport-jwt").Strategy //ใช้ในการ decode jwt ออกมา
 const ExtractJwt = require("passport-jwt").ExtractJwt
@@ -15,16 +16,17 @@ module.exports = (passport) => {
             User.findOne({
               'local.username': username
             }).then(user => {
-                if (err) throw err
-
                 if (!user) 
                     return done(null, false, { message: 'That username is not registered' })
                 
-                if (!user.validPassword(password)) 
-                    return done(null, false, { message: 'Password incorrect' })
-                
-                else
-                    return done(null,user)
+                bcrypt.compare(password, user.local.password, (err, isMatch) => {
+                    if (err) throw err
+                    if (isMatch) {
+                        return done(null, user)
+                    } else {
+                        return done(null, false, { message: 'Password incorrect' })
+                    }
+                })
             })
         })
     )
