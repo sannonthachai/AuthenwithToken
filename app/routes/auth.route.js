@@ -58,28 +58,6 @@ router.post('/register', (req,res) => {
     }
 })
 
-router.post('/index', (req,res,next) => {
-    passport.authenticate('local', { failureRedirect: '/index', failureFlash: true }, (err,user,info) => {
-        if (err) {
-            console.log(err)
-        }
-        if (info != undefined) {
-            console.log(info.message)
-            res.send(info.message)
-        } else {
-            req.login(user, () => {
-                    let payload = {
-                        sub: req.body.username,
-                        iat: new Date().getTime()
-                    }
-                    let token = jwt.sign(payload, key.secret)
-                    res.cookie('jwt', token, { httpOnly: true })
-                    res.redirect('/profile')
-                })
-        }
-    }) (req,res,next)
-})
-
 router.post('/index', passport.authenticate('local', {
     failureRedirect: '/index',
     failureFlash: true,
