@@ -7,6 +7,7 @@ const key = require('../../config/key')
 // Import model ==========================================================================
 const User = require('../models/user.model')
 
+// Get method ============================================================================
 router.get('/index', (req,res) => {
     res.render('index')
 })
@@ -15,6 +16,14 @@ router.get('/register', (req,res) => {
     res.render('register')
 })
 
+router.get('/logout', (req,res) => {
+    req.logout()
+    req.flash('success_msg', 'You are logged out')
+    res.clearCookie('jwt', { httpOnly: true })
+    res.redirect('/index')
+})
+
+// Post method ============================================================================
 router.post('/register', (req,res) => {
     let { email, username, password, password2 } = req.body
     let errors = []
@@ -72,12 +81,5 @@ router.post('/index', passport.authenticate('local', {
         res.redirect('/profile')
     }
 )
-
-router.get('/logout', (req,res) => {
-    req.logout()
-    req.flash('success_msg', 'You are logged out')
-    res.clearCookie('jwt', { httpOnly: true })
-    res.redirect('/index')
-})
 
 module.exports = router

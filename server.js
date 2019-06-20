@@ -13,7 +13,7 @@ const session = require('express-session')
 const cookieParser = require('cookie-parser')
 const flash = require('connect-flash')
 
-// Passport Config
+// Passport Config =================================================================
 require('./config/passport')(passport)
 
 // Connect Database ================================================================
@@ -33,7 +33,7 @@ app.use(express.static(path.join(__dirname, 'public'))) // Get static file
 
 // Required for passport ===========================================================
 app.use(session({
-    secret: 'CRIMSON_SESSION', // session secret
+    secret: 'CRIMSON_SESSION', // Session secret
     resave: true,
     saveUninitialized: true
 }));
@@ -49,7 +49,7 @@ app.use((req, res, next) => {
 })
 
 // Routes ==========================================================================
-const { ensureAuthenticated } = require('./config/middleware')
+const { ensureAuthenticated } = require('./config/middleware') // Middleware require token
 app.use('/', require('./app/routes/auth.route'))
 app.use('/', ensureAuthenticated, require('./app/routes/user.route'))
 

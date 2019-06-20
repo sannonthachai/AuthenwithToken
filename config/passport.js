@@ -2,7 +2,7 @@
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcrypt')
 // For JWT ===============================================================================
-const JwtStrategy = require("passport-jwt").Strategy //ใช้ในการ decode jwt ออกมา
+const JwtStrategy = require("passport-jwt").Strategy
 const cookieExtractor = (req => {
     let token = null
     if (req && req.cookies) token = req.cookies['jwt']
@@ -38,14 +38,14 @@ module.exports = (passport) => {
     passport.use(new JwtStrategy({
         jwtFromRequest: cookieExtractor,
         secretOrKey: key.secret
-    },
-    (payload, done) => {
-        User.findOne({ 'local.username': payload.sub })
-            .then(user => {
-                return done(null, user)
-            })
-            .catch(err => {
-                return done(err)
-            })
-    }))
+    }, (payload, done) => {
+            User.findOne({ 'local.username': payload.sub })
+                .then(user => {
+                    return done(null, user)
+                })
+                .catch(err => {
+                    return done(err)
+                })
+        }
+    ))
 }
