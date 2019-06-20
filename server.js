@@ -49,9 +49,9 @@ app.use((req, res, next) => {
 })
 
 // Routes ==========================================================================
-const { ensureAuthenticated } = require('./config/middleware') // Middleware require token
+const token = require('./config/middleware') // Middleware require token
 app.use('/', require('./app/routes/auth.route'))
-app.use('/', ensureAuthenticated, require('./app/routes/user.route'))
+app.use('/', token.ensureAuthenticated, require('./app/routes/user.route'))
 
 // Connect Port ====================================================================
 const PORT = process.env.PORT || 5000

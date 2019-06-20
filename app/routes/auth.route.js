@@ -6,13 +6,15 @@ const jwt = require('jsonwebtoken')
 const key = require('../../config/key')
 // Import model ==========================================================================
 const User = require('../models/user.model')
+// Import middleware =====================================================================
+const token = require('../../config/middleware')
 
 // Get method ============================================================================
-router.get('/index', (req,res) => {
+router.get('/index', token.forwardAuthenticated, (req,res) => {
     res.render('index')
 })
 
-router.get('/register', (req,res) => {
+router.get('/register', token.forwardAuthenticated, (req,res) => {
     res.render('register')
 })
 
